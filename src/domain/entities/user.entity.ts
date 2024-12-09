@@ -30,11 +30,20 @@ export class UserEntity implements IUser {
     this.date_of_birth = props.date_of_birth;
     this.profileImageURL = props.profileImageURL;
     this.social_links = props.social_links;
-    this.is_active = props.is_active !== undefined ? props.is_active : true; 
+    this.is_active = props.is_active !== undefined ? props.is_active : true;
     this.is_verified =
-      props.is_verified !== undefined ? props.is_verified : false; 
-    this.role = props.role || 'VIEWER'; 
+      props.is_verified !== undefined ? props.is_verified : false;
+    this.role = props.role || 'VIEWER';
     this.bio = props.bio;
     this.google_id = props.google_id;
+  }
+  validateEmail(): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(this.email);
+  }
+
+  validatePassword(): boolean {
+    // Example password validation
+    return this.password.length >= 8;
   }
 }
