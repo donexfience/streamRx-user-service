@@ -1,6 +1,6 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { IUserRepository } from '../interfaces/database-repository.interface';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UserEntity } from 'src/domain/entities/user.entity';
 import { User, UserDocument } from '../schemas/user.schema';
 
@@ -26,10 +26,10 @@ export class UserRepository implements IUserRepository {
   }
   private toEntity(user: UserDocument): UserEntity {
     return new UserEntity({
-      id: user._id.toString(),
+      id: user.id,
       username: user.username,
       email: user.email,
-      password: user.hashed_password,
+      password: user.password,
       createdAt: user.createdAt || new Date(),
       updatedAt: user.updatedAt || new Date(),
       phone_number: user.phone_number,

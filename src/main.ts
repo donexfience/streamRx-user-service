@@ -11,7 +11,7 @@ async function bootstrap() {
     options: {
       package: 'user_service',
       protoPath: join(__dirname, './infrastructure/grpc/protos/user.proto'), 
-      url: 'localhost:50051', 
+      url: '0.0.0.0:50051', 
     },
   });
   

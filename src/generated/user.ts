@@ -21,8 +21,10 @@ export interface User {
   profileImageUrl: string;
   isActive: boolean;
   phoneNumber: string;
-  dateOfBirth: string;
+  dateOfBirth?: string;
   username: string;
+  social_links:string
+  google_id:string
 }
 
 export interface CreateUserRequest {

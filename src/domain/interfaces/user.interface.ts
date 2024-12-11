@@ -1,12 +1,14 @@
+import { Types } from 'mongoose';
+
 export interface IUser {
-  id?: string;
+  id?: Types.ObjectId;
   username: string;
   email: string;
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
   phone_number?: string;
-  date_of_birth?: Date;
+  date_of_birth?: string;
   profileImageURL?: string;
   social_links?: string;
   is_active?: boolean;

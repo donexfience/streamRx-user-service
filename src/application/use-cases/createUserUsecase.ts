@@ -12,11 +12,21 @@ export class CreateUserUseCase {
     if (existingUser) {
       throw new ConflictException('User with this email already exists');
     }
-
+    console.log('inside usecase create');
     const userEntity = new UserEntity({
+      
       username: dto.username,
       email: dto.email,
       password: dto.password,
+      bio:dto.bio,
+      is_active:dto.isActive,
+      is_verified:dto.isVerified,
+      phone_number:dto.phoneNumber,
+      role:dto.role,
+      social_links:dto.social_links,
+      date_of_birth:dto.dateOfBirth,
+      google_id:dto.google_id
+
     });
 
     if (!userEntity.validateEmail() || !userEntity.validatePassword()) {

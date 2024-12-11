@@ -12,7 +12,7 @@ export class User {
   email: string;
 
   @Prop({ required: true })
-  hashed_password: string;
+  password: string;
 
   @Prop({ unique: true, sparse: true })
   username?: string;
@@ -21,7 +21,7 @@ export class User {
   phone_number?: string;
 
   @Prop()
-  date_of_birth?: Date;
+  date_of_birth?: string;
 
   @Prop()
   profileImageURL?: string;
@@ -32,7 +32,7 @@ export class User {
   @Prop({ default: true })
   is_active: boolean;
 
-  @Prop({ default: false })
+  @Prop({ default: true })
   is_verified: boolean;
 
   @Prop({ default: 'VIEWER' }) 
