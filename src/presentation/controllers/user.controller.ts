@@ -1,22 +1,28 @@
-import { Body, Controller, Injectable, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Injectable,
+  Post,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
 import { CreateUserDto } from 'src/application/dtos/create-user.dto';
 import { CreateUserUseCase } from 'src/application/use-cases/createUserUsecase';
 import { UserEntity } from 'src/domain/entities/user.entity';
+import { CreateUserRequest, CreateUserResponse, UserServiceControllerMethods } from 'src/generated/user';
+import { UserService } from 'src/infrastructure/service/user.service';
 
 @Controller()
+@UserServiceControllerMethods()
 export class UserController {
-  constructor(private readonly createUserUseCase: CreateUserUseCase) {}
-  @Post()
-  @UsePipes(new ValidationPipe())
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<Partial<UserEntity>> {
-    const createdUser = await this.createUserUseCase.execute(createUserDto);
-    
-    // Remove sensitive information
+  @GrpcMethod('UserService', 'createUser')
+  async createUser(request: CreateUserRequest): Promise<CreateUserResponse> {
+    console.log('Received user creation request:', request);
     return {
-      id: createdUser.id,
-      username: createdUser.username,
-      email: createdUser.email
+      success: true,
+      message: 'User created successfully',
     };
   }
-}
 
+}

@@ -1,8 +1,8 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { IUserRepository } from '../interfaces/database-repository.interface';
-import { User, UserDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import { UserEntity } from 'src/domain/entities/user.entity';
+import { User, UserDocument } from '../schemas/user.schema';
 
 export class UserRepository implements IUserRepository {
   constructor(
