@@ -38,6 +38,7 @@
     "protobufjs": "^7.4.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "streamrx_common": "^1.0.29",
     "ts-proto": "^2.6.0"
   },
   "devDependencies": {

@@ -5,16 +5,10 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
 async function bootstrap() {
+  // Create the main HTTP application
+  const app = await NestFactory.create(AppModule);
 
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-    transport: Transport.GRPC,
-    options: {
-      package: 'user_service',
-      protoPath: join(__dirname, './infrastructure/grpc/protos/user.proto'), 
-      url: '0.0.0.0:50051', 
-    },
-  });
-  
+  // Enable global pipes for HTTP requests
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -22,6 +16,21 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  await app.listen();
+
+  await app.listen(3000);
+  console.log('HTTP server is running on http://localhost:3000');
+
+  const grpcApp = app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.GRPC,
+    options: {
+      package: 'user_service', 
+      protoPath: join(__dirname, './infrastructure/grpc/protos/user.proto'),
+      url: '0.0.0.0:50051',
+    },
+  });
+
+  // Start the gRPC server
+  await app.startAllMicroservices();
+  console.log('gRPC server is running on 0.0.0.0:50051');
 }
 bootstrap();

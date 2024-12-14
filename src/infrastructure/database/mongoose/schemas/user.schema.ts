@@ -1,18 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { SocialLink } from 'src/domain/interfaces/user.interface';
 
 export type UserDocument = HydratedDocument<User> & {
   createdAt: Date;
   updatedAt: Date;
 };
 
-@Schema({ timestamps: true }) 
+@Schema({ timestamps: true })
 export class User {
   @Prop({ required: true, unique: true })
   email: string;
-
-  @Prop({ required: true })
-  password: string;
 
   @Prop({ unique: true, sparse: true })
   username?: string;
@@ -26,23 +24,15 @@ export class User {
   @Prop()
   profileImageURL?: string;
 
-  @Prop({ type: String }) 
-  social_links?: string;
+  @Prop({ type: [String], default: [] })
+  social_links?: SocialLink[];
 
-  @Prop({ default: true })
-  is_active: boolean;
-
-  @Prop({ default: true })
-  is_verified: boolean;
-
-  @Prop({ default: 'VIEWER' }) 
+  @Prop({ default: 'VIEWER' })
   role: string;
 
   @Prop()
   bio?: string;
 
-  @Prop({ unique: true, sparse: true })
-  google_id?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

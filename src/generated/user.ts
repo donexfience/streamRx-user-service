@@ -8,6 +8,7 @@
 import { Metadata } from "@grpc/grpc-js";
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
+import { SocialLink } from "src/domain/interfaces/user.interface";
 
 export const protobufPackage = "user_service";
 
@@ -23,7 +24,7 @@ export interface User {
   phoneNumber: string;
   dateOfBirth?: string;
   username: string;
-  social_links:string
+  social_links:SocialLink[]
   google_id:string
 }
 

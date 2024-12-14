@@ -1,18 +1,16 @@
 import { IsEmail, IsNotEmpty, MinLength, IsOptional, IsDate, IsBoolean } from 'class-validator';
+import { SocialLink } from 'src/domain/interfaces/user.interface';
 
 export interface ICreateUserDto {
   username: string;
   email: string;
-  password: string;
   role?: string;
   bio?: string; 
-  isVerified?: boolean;
   profileImageUrl?: string;
-  isActive?: boolean;
   phoneNumber?: string; 
   dateOfBirth?:string;
-  social_links?:string
-  google_id?:string
+  social_links?:SocialLink[]
+
 }
 
 export class CreateUserDto implements ICreateUserDto {
@@ -22,10 +20,6 @@ export class CreateUserDto implements ICreateUserDto {
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
-  @MinLength(8)
-  password: string;
-
   @IsOptional()
   @IsNotEmpty()
   role: string = 'VIEWER'; 
@@ -34,15 +28,7 @@ export class CreateUserDto implements ICreateUserDto {
   bio: string = '';
 
   @IsOptional()
-  @IsBoolean()
-  isVerified: boolean = true; 
-
-  @IsOptional()
   profileImageUrl: string = '';
-
-  @IsOptional()
-  @IsBoolean()
-  isActive: boolean = true; 
 
   @IsOptional()
   @IsNotEmpty()
@@ -53,8 +39,5 @@ export class CreateUserDto implements ICreateUserDto {
 
 
   @IsOptional()
-  social_links: string = '';
-
-  @IsOptional()
-  google_id?: string='';
+  social_links: SocialLink[] = [];
 }
