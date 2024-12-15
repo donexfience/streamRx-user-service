@@ -1,3 +1,4 @@
+import { UserRepository } from './../../infrastructure/database/mongoose/repositories/user.repository';
 import { UpdateUserUseCase } from './../../application/use-cases/updateUserUsecase';
 import { CreateUserUseCase } from './../../application/use-cases/createUserUsecase';
 import {
@@ -33,6 +34,7 @@ export class UserController implements OnModuleInit {
   private rabbitMQProducer: RabbitMQProducer;
   constructor(
     private CreateUserUseCase: CreateUserUseCase,
+    private UserRepository: UserRepository,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly rabbitMQConnection: RabbitMQConnection,
   ) {
@@ -98,10 +100,17 @@ export class UserController implements OnModuleInit {
     @Body() request: UpdateUserRequest,
   ): Promise<UpdateUserResponse> {
     try {
+      const currentUser = await this.UserRepository.findById(id);
+      if (!currentUser) {
+        return {
+          success: false,
+          message: 'User not found',
+        };
+      }
+
       console.log(request.socialLinks, 'request');
 
       const updateUserDto: IUpdateUserDto = {
-        email: request.email,
         username: request.username,
         role: request.role,
         bio: request.bio,
@@ -109,18 +118,19 @@ export class UserController implements OnModuleInit {
         phoneNumber: request.phoneNumber,
         dateOfBirth: request.dateOfBirth,
         social_links: request.socialLinks,
+        email:currentUser.email
       };
       console.log(updateUserDto, 'hello passed type test');
       const updateUser = await this.updateUserUseCase.execute(
         updateUserDto,
         id,
       );
+
       const exchangeName = 'user-updated';
-      await this.rabbitMQProducer.publishToExchange(
-        exchangeName,
-        '', 
-        { id, ...updateUserDto }
-      );
+      await this.rabbitMQProducer.publishToExchange(exchangeName, '', {
+        id,
+        ...updateUserDto,
+      });
       return {
         success: true,
         message: 'User updated successfully',
