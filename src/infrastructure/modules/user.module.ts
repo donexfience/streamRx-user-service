@@ -7,12 +7,13 @@ import { CreateUserUseCase } from 'src/application/use-cases/createUserUsecase';
 import { UserSchema, User } from '../database/mongoose/schemas/user.schema';
 import { UpdateUserUseCase } from 'src/application/use-cases/updateUserUsecase';
 import { RabbitMQConnection } from 'streamrx_common';
+import { GetUserUseCase } from 'src/application/use-cases/getUserUsecase';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UserController],
-  providers: [UserRepository, CreateUserUseCase,UpdateUserUseCase,RabbitMQConnection],
+  providers: [UserRepository, CreateUserUseCase,UpdateUserUseCase,RabbitMQConnection,GetUserUseCase],
 })
 export class UserModule {}

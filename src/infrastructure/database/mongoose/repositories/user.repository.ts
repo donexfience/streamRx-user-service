@@ -13,6 +13,7 @@ export class UserRepository implements IUserRepository {
 
   async create(user: UserEntity): Promise<UserEntity> {
     const createdUser = new this.userModel(user);
+    console.log(user, 'user before database');
     const savedUser = await createdUser.save();
     return this.toEntity(savedUser);
   }
@@ -43,31 +44,42 @@ export class UserRepository implements IUserRepository {
       const existingLinks = existingUser.social_links || [];
       const mergedLinks: SocialLink[] = [...existingLinks];
 
-      updateData.social_links.forEach((newLink: any) => {
-        console.log(newLink, 'newLink');
-        if (!newLink._id) {
-          mergedLinks.push(newLink);
+      updateData.social_links.forEach((newLink: SocialLink) => {
+        const existingLinkIndex = mergedLinks.findIndex(
+          (link: SocialLink) =>
+            link.platform === newLink.platform && link.url === newLink.url,
+        );
+
+        if (existingLinkIndex !== -1) {
+          mergedLinks[existingLinkIndex] = {
+            ...mergedLinks[existingLinkIndex],
+            ...newLink,
+          };
         } else {
-          const existingLinkIndex = mergedLinks.findIndex(
-            (link: any) => link.id === newLink.id,
-          );
-          if (existingLinkIndex !== -1) {
-            mergedLinks[existingLinkIndex] = {
-              ...mergedLinks[existingLinkIndex],
-              ...newLink,
-            };
-          } else {
-            mergedLinks.push(newLink);
-          }
+          mergedLinks.push(newLink);
         }
       });
+      const uniqueLinks = mergedLinks.filter(
+        (link, index, self) =>
+          index ===
+          self.findIndex(
+            (t) => t.platform === link.platform && t.url === link.url,
+          ),
+      );
 
-      updateData.social_links = mergedLinks;
+      updateData.social_links = uniqueLinks;
+    }
+
+    if (updateData.tags && Array.isArray(updateData.tags)) {
+      const existingTags = existingUser.tags || [];
+      const updatedTags = Array.from(
+        new Set([...existingTags, ...updateData.tags]),
+      );
+      updateData.tags = updatedTags;
     }
 
     console.log('Merged social links:', updateData.social_links);
 
-    // Step 3: Update user with the new data
     const updatedUser = await this.userModel
       .findByIdAndUpdate(id, { $set: updateData }, { new: true })
       .exec();
@@ -94,6 +106,7 @@ export class UserRepository implements IUserRepository {
           : [],
       role: user.role,
       bio: user.bio,
+      tags: user.tags,
     });
   }
 }

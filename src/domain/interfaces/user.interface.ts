@@ -20,4 +20,5 @@ export interface IUser {
   social_links?: Array<SocialLink>;
   role?: string;
   bio?: string;
+  tags?:string[]
 }

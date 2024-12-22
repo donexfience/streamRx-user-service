@@ -14,17 +14,16 @@ export class CreateUserUseCase {
     }
     console.log('inside usecase create');
     const userEntity = new UserEntity({
-      
       username: dto.username,
       email: dto.email,
-      bio:dto.bio,
-      phone_number:dto.phoneNumber,
-      role:dto.role,
-      social_links:dto.social_links,
-      date_of_birth:dto.dateOfBirth,
-
+      bio: dto.bio,
+      phone_number: dto.phoneNumber,
+      role: dto.role,
+      social_links: dto.social_links,
+      date_of_birth: dto.dateOfBirth,
+      profileImageURL: dto.profileImageUrl,
     });
-    
+
     return this.userRepository.create(userEntity);
   }
 }

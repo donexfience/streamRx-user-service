@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
-import { IUser, SocialLink } from "../interfaces/user.interface";
+import { Types } from 'mongoose';
+import { IUser, SocialLink } from '../interfaces/user.interface';
 
 export class UserEntity implements IUser {
   id?: Types.ObjectId;
@@ -10,9 +10,10 @@ export class UserEntity implements IUser {
   phone_number?: string;
   date_of_birth?: string;
   profileImageURL?: string;
-  social_links: SocialLink[]; 
+  social_links: SocialLink[];
   role: string;
   bio?: string;
+  tags: string[];
 
   constructor(props: IUser) {
     this.id = props.id;
@@ -23,10 +24,10 @@ export class UserEntity implements IUser {
 
     this.phone_number = props.phone_number;
     this.date_of_birth = props.date_of_birth;
-    this.profileImageURL = props.profileImageURL;
-    this.social_links = props.social_links || []; 
+    this.profileImageURL = props.profileImageURL || "";
+    this.social_links = props.social_links || [];
     this.role = props.role || 'VIEWER';
     this.bio = props.bio;
+    this.tags = props.tags || [];
   }
-
 }

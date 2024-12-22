@@ -26,6 +26,7 @@ export interface User {
   username: string;
   social_links:SocialLink[]
   google_id:string
+  tags:[]
 }
 
 export interface CreateUserRequest {
