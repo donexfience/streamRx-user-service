@@ -111,7 +111,7 @@ export class UserController implements OnModuleInit {
         };
       }
       const user = await this.GetUserUseCase.execute(email);
-      console.log(user,"user get");
+      console.log(user, 'user get');
       return {
         success: true,
         message: 'User get successfully',
@@ -135,6 +135,7 @@ export class UserController implements OnModuleInit {
       };
     }
   }
+
 
   @Put('/updateUser/:email')
   @HttpCode(HttpStatus.OK)
@@ -177,7 +178,7 @@ export class UserController implements OnModuleInit {
         dateOfBirth: request.dateOfBirth,
         social_links: request.socialLinks,
         email,
-        tags:request.tags
+        tags: request.tags,
       };
 
       console.log('DTO for Update:', updateUserDto);

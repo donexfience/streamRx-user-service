@@ -18,6 +18,25 @@ export class UserRepository implements IUserRepository {
     return this.toEntity(savedUser);
   }
 
+  async findAll(): Promise<UserEntity[] | null> {
+    const users = await this.userModel.find();
+    if (users.length === 0) return null;
+
+    const mappedUsers: UserEntity[] = users.map((user) => ({
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      tags: user.tags,
+      social_links: user.social_links,
+      date_of_birth: user.date_of_birth,
+      bio: user.bio,
+      profileImageURL: user.profileImageURL,
+      phone_number: user.phone_number,
+    }));
+
+    return mappedUsers;
+  }
+
   async findByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.userModel.findOne({ email });
     return user ? this.toEntity(user) : null;
