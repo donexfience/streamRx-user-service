@@ -1,3 +1,4 @@
+import { CreateRequestUseCase } from './../../application/use-cases/streamer-Requeset/createRequest';
 import { GetUserUseCase } from './../../application/use-cases/getUserUsecase';
 import { UserRepository } from './../../infrastructure/database/mongoose/repositories/user.repository';
 import { UpdateUserUseCase } from './../../application/use-cases/updateUserUsecase';
@@ -32,6 +33,12 @@ import {
   UserServiceControllerMethods,
 } from 'src/generated/user';
 import { RabbitMQProducer, RabbitMQConnection, QUEUES } from 'streamrx_common';
+import { CreateStreamerRequestDto } from 'src/application/dtos/create-request-dto';
+import { UpdateRequestStatusUseCase } from 'src/application/use-cases/streamer-Requeset/updateRequest';
+import { UpdateStreamerRequestDto } from 'src/application/dtos/update-request-dto';
+import { GetAllUserUseCase } from 'src/application/use-cases/getAllUseCase';
+import { GetAllRequest } from 'src/application/use-cases/streamer-Requeset/getAllRequest';
+import { GetRequestByIdUseCase } from 'src/application/use-cases/streamer-Requeset/getRequestById';
 
 @Controller('users')
 @UserServiceControllerMethods()
@@ -43,6 +50,10 @@ export class UserController implements OnModuleInit {
     private readonly updateUserUseCase: UpdateUserUseCase,
     private GetUserUseCase: GetUserUseCase,
     private readonly rabbitMQConnection: RabbitMQConnection,
+    private readonly streamerRequestUseCase: CreateRequestUseCase,
+    private readonly streamerRequestUpdateUseCase: UpdateRequestStatusUseCase,
+    private readonly getAllRequest: GetAllRequest,
+    private readonly getRequestById: GetRequestByIdUseCase,
   ) {
     this.rabbitMQProducer = new RabbitMQProducer(rabbitMQConnection);
   }
@@ -136,7 +147,6 @@ export class UserController implements OnModuleInit {
     }
   }
 
-
   @Put('/updateUser/:email')
   @HttpCode(HttpStatus.OK)
   async updateUser(
@@ -213,6 +223,99 @@ export class UserController implements OnModuleInit {
       return {
         success: false,
         message: error.message || 'Failed to update user',
+      };
+    }
+  }
+
+  @Post('/streamer-requests')
+  @HttpCode(HttpStatus.CREATED)
+  @UsePipes(new ValidationPipe())
+  async createStreamerRequest(
+    @Body() createStreamerRequestDto: CreateStreamerRequestDto,
+  ) {
+    try {
+      const createdRequest = await this.streamerRequestUseCase.execute(
+        createStreamerRequestDto,
+      );
+      return {
+        success: true,
+        message: 'Streamer request created successfully',
+        request: createdRequest,
+      };
+    } catch (error) {
+      console.error('Error creating streamer request:', error);
+      return {
+        success: false,
+        message: error.message || 'Failed to create streamer request',
+      };
+    }
+  }
+
+  @Put('/streamer-requests/:id')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe())
+  async updateStreamerRequest(
+    @Param('id') id: string,
+    @Body() updateStreamerRequestDto: UpdateStreamerRequestDto,
+  ) {
+    try {
+      const updatedRequest = await this.streamerRequestUpdateUseCase.execute(
+        id,
+        updateStreamerRequestDto,
+      );
+      return {
+        success: true,
+        message: 'Streamer request updated successfully',
+        request: updatedRequest,
+      };
+    } catch (error) {
+      console.error('Error updating streamer request:', error);
+      return {
+        success: false,
+        message: error.message || 'Failed to update streamer request',
+      };
+    }
+  }
+  @Get('/streamer-requests')
+  @HttpCode(HttpStatus.OK)
+  async getAllStreamerRequests() {
+    try {
+      const requests = await this.getAllRequest.execute();
+      return {
+        success: true,
+        message: 'Streamer requests fetched successfully',
+        requests,
+      };
+    } catch (error) {
+      console.error('Error fetching streamer requests:', error);
+      return {
+        success: false,
+        message: error.message || 'Failed to fetch streamer requests',
+      };
+    }
+  }
+
+  @Get('/streamer-requests/:id')
+  @HttpCode(HttpStatus.OK)
+  async getStreamerRequestById(@Param('id') id: string) {
+    try {
+      const request = await this.getRequestById.execute(id);
+      if (!request) {
+        return {
+          success: false,
+          message: 'Streamer request not found',
+        };
+      }
+      return {
+        success: true,
+        message: 'Streamer request fetched successfully',
+        request,
+      };
+    } catch (error) {
+      console.error('Error fetching streamer request:', error);
+      return {
+        success: false,
+        message: error.message || 'Failed to fetch streamer request',
       };
     }
   }
