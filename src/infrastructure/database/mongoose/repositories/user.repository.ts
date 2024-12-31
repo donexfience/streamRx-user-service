@@ -3,9 +3,10 @@ import { IUserRepository } from '../interfaces/database-repository.interface';
 import { Model, Types } from 'mongoose';
 import { UserEntity } from 'src/domain/entities/user.entity';
 import { User, UserDocument } from '../schemas/user.schema';
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SocialLink } from 'src/domain/interfaces/user.interface';
 
+@Injectable()
 export class UserRepository implements IUserRepository {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,

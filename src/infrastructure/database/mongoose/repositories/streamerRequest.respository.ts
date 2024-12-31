@@ -7,19 +7,22 @@ import {
 } from '../schemas/streamerRequsetSchema';
 import { Model, Types } from 'mongoose';
 import { StreamerRequestEntity } from 'src/domain/entities/streamerRequestEntity';
+import { Injectable } from '@nestjs/common';
 
+
+@Injectable()
 export class StreamerRequestRepository implements IStreamerRequestRepository {
   constructor(
-    @InjectModel(StreamerRequeset.name)
-    private readonly streamerRequestModel: Model<StreamerRequestDocument>,
+    @InjectModel(StreamerRequeset.name) private readonly streamerRequestModel: Model<StreamerRequestDocument>,
   ) {}
 
   async create(
     createRequestDto: StreamerRequestEntity,
   ): Promise<StreamerRequestEntity> {
+    console.log(createRequestDto, 'in the repository before creating');
     const createStreamerRequest = new this.streamerRequestModel(
       createRequestDto,
-    ); 
+    );
     const savedRequest = await createStreamerRequest.save();
     return this.toEntity(savedRequest);
   }

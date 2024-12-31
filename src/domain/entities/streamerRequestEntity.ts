@@ -4,7 +4,7 @@ import { StreamerRequestStatus } from 'src/infrastructure/database/mongoose/sche
 export class StreamerRequestEntity {
   id: Types.ObjectId; 
   channelName: string;
-  category: string; 
+  category: string[]; 
   experience: string;
   experiencedPlatforms: string[]; 
   message: string; 
@@ -16,7 +16,7 @@ export class StreamerRequestEntity {
   constructor(init: Partial<StreamerRequestEntity>) {
     this.id = init.id || new Types.ObjectId();
     this.channelName = init.channelName || '';
-    this.category = init.category || '';
+    this.category = init.category || [];
     this.experience = init.experience || '';
     this.experiencedPlatforms = init.experiencedPlatforms || [];
     this.message = init.message || '';

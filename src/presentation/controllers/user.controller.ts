@@ -8,6 +8,7 @@ import {
   Controller,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
   Injectable,
   OnModuleInit,
@@ -227,16 +228,35 @@ export class UserController implements OnModuleInit {
     }
   }
 
-  @Post('/streamer-requests')
+  @Post('/streamerrequests')
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes(new ValidationPipe())
   async createStreamerRequest(
     @Body() createStreamerRequestDto: CreateStreamerRequestDto,
   ) {
     try {
-      const createdRequest = await this.streamerRequestUseCase.execute(
-        createStreamerRequestDto,
-      );
+      console.log('Received request data:', createStreamerRequestDto);
+
+      // Ensure all optional fields have default values
+      const normalizedDto = {
+        channelProfileImageURL:
+          createStreamerRequestDto.channelProfileImageURL || null,
+        category: Array.isArray(createStreamerRequestDto.category)
+          ? createStreamerRequestDto.category
+          : [createStreamerRequestDto.category],
+        channelName: createStreamerRequestDto.channelName || '',
+        message: createStreamerRequestDto.message || '',
+        socialLinks: {
+          twitter: createStreamerRequestDto.socialLinks?.twitter || '',
+          instagram: createStreamerRequestDto.socialLinks?.instagram || '',
+          youtube: createStreamerRequestDto.socialLinks?.youtube || '',
+        },
+        experience: createStreamerRequestDto.experience || '',
+        accessibility: createStreamerRequestDto.accessibility || '',
+      };
+
+      const createdRequest =
+        await this.streamerRequestUseCase.execute(normalizedDto);
+
       return {
         success: true,
         message: 'Streamer request created successfully',
@@ -244,10 +264,10 @@ export class UserController implements OnModuleInit {
       };
     } catch (error) {
       console.error('Error creating streamer request:', error);
-      return {
-        success: false,
-        message: error.message || 'Failed to create streamer request',
-      };
+      throw new HttpException(
+        error.message || 'Failed to create streamer request',
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 

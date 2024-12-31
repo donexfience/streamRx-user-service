@@ -18,7 +18,7 @@ export class StreamerRequeset {
   channelName: string;
 
   @Prop({ required: true })
-  category: string;
+  category: string[];
 
   @Prop({ required: true })
   experience: string;
