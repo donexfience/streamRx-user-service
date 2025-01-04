@@ -60,6 +60,7 @@ export class StreamerRequestRepository implements IStreamerRequestRepository {
     id: string,
     status: string,
   ): Promise<StreamerRequestEntity> {
+    console.log('Repository: Updating status:', id, status);
     const updatedRequest = await this.streamerRequestModel
       .findByIdAndUpdate(id, { status }, { new: true })
       .exec();

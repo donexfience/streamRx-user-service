@@ -274,12 +274,19 @@ export class UserController implements OnModuleInit {
 
   @Put('/streamer-requests/:id')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new ValidationPipe())
   async updateStreamerRequest(
     @Param('id') id: string,
     @Body() updateStreamerRequestDto: UpdateStreamerRequestDto,
   ) {
     try {
+      console.log('⭐ Controller hit - updateStreamerRequest');
+      console.log('ID:', id);
+      console.log('DTO:', updateStreamerRequestDto);
+      console.log(
+        'calling update streamer request',
+        id,
+        updateStreamerRequestDto,
+      );
       const updatedRequest = await this.streamerRequestUpdateUseCase.execute(
         id,
         updateStreamerRequestDto,
