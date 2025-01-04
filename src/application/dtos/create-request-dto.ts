@@ -1,5 +1,12 @@
-import { Type } from "class-transformer";
-import { IsArray, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsEmail,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 export class SocialLinksDto {
   @IsString()
@@ -16,6 +23,9 @@ export class SocialLinksDto {
 }
 
 export class CreateStreamerRequestDto {
+  @IsString()
+  email: string;
+
   @IsString()
   @IsOptional()
   channelProfileImageURL: string | null;

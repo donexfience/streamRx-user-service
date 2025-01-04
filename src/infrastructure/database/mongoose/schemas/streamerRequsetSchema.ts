@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 export type StreamerRequestDocument = HydratedDocument<StreamerRequeset> & {
   createdAt: Date;
@@ -14,6 +14,11 @@ export enum StreamerRequestStatus {
 
 @Schema({ timestamps: true })
 export class StreamerRequeset {
+
+
+  @Prop({ required: true })
+  email: string;
+
   @Prop({ required: true })
   channelName: string;
 
@@ -43,7 +48,7 @@ export class StreamerRequeset {
   @Prop({ required: true })
   accessibility: string;
 
-  @Prop({
+  @Prop({     
     type: String,
     enum: StreamerRequestStatus,
     default: StreamerRequestStatus.PENDING,

@@ -24,6 +24,7 @@ export class CreateRequestUseCase {
       message: createRequestDto.message,
       socialLinks: socialLinks,
       accessibility: createRequestDto.accessibility,
+      email: createRequestDto.email
     });
     console.log('in the use case after convertion to entity ', newRequest);
 

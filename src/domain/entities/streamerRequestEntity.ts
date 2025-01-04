@@ -3,6 +3,7 @@ import { StreamerRequestStatus } from 'src/infrastructure/database/mongoose/sche
 
 export class StreamerRequestEntity {
   id: Types.ObjectId; 
+  email:string;
   channelName: string;
   category: string[]; 
   experience: string;
@@ -18,6 +19,7 @@ export class StreamerRequestEntity {
     this.channelName = init.channelName || '';
     this.category = init.category || [];
     this.experience = init.experience || '';
+    this.email =init.email ;
     this.experiencedPlatforms = init.experiencedPlatforms || [];
     this.message = init.message || '';
     this.socialLinks = init.socialLinks || { twitter: '', instagram: '', youtube: '' };

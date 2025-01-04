@@ -9,11 +9,11 @@ import { Model, Types } from 'mongoose';
 import { StreamerRequestEntity } from 'src/domain/entities/streamerRequestEntity';
 import { Injectable } from '@nestjs/common';
 
-
 @Injectable()
 export class StreamerRequestRepository implements IStreamerRequestRepository {
   constructor(
-    @InjectModel(StreamerRequeset.name) private readonly streamerRequestModel: Model<StreamerRequestDocument>,
+    @InjectModel(StreamerRequeset.name)
+    private readonly streamerRequestModel: Model<StreamerRequestDocument>,
   ) {}
 
   async create(
@@ -28,14 +28,27 @@ export class StreamerRequestRepository implements IStreamerRequestRepository {
   }
 
   async findById(id: string): Promise<StreamerRequestEntity> {
-    const request = await this.streamerRequestModel.findById(id).exec();
-    if (!request) return null;
-    return this.toEntity(request);
+    try {
+      console.log('StreamerRequestRepository: Finding by id:', id);
+      const request = await this.streamerRequestModel.findById(id).exec();
+      console.log('StreamerRequestRepository: Found request:', !!request);
+      if (!request) return null;
+      return this.toEntity(request);
+    } catch (error) {
+      console.error('StreamerRequestRepository: Error in findById:', error);
+      throw error;
+    }
   }
-
   async findAll(): Promise<StreamerRequestEntity[]> {
-    const requests = await this.streamerRequestModel.find().exec();
-    return requests.map(this.toEntity);
+    try {
+      console.log('Repository: Attempting to find all requests');
+      const requests = await this.streamerRequestModel.find().exec();
+      console.log(`Repository: Found ${requests.length} requests`);
+      return requests.map((request) => this.toEntity(request));
+    } catch (error) {
+      console.error('Repository: Error in findAll:', error);
+      throw error;
+    }
   }
 
   async findByStatus(status: string): Promise<StreamerRequestEntity[]> {
@@ -80,6 +93,7 @@ export class StreamerRequestRepository implements IStreamerRequestRepository {
       status: document.status as unknown as StreamerRequestStatus,
       createdAt: document.createdAt || new Date(),
       updatedAt: document.updatedAt || new Date(),
+      email: document.email,
     });
   }
 }

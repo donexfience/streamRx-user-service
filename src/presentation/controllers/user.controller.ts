@@ -238,6 +238,7 @@ export class UserController implements OnModuleInit {
 
       // Ensure all optional fields have default values
       const normalizedDto = {
+        email: createStreamerRequestDto.email,
         channelProfileImageURL:
           createStreamerRequestDto.channelProfileImageURL || null,
         category: Array.isArray(createStreamerRequestDto.category)
