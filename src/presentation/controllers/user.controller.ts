@@ -101,7 +101,7 @@ export class UserController implements OnModuleInit {
       
       const exchangeName = 'user-created';
       await this.rabbitMQProducer.publishToExchange(exchangeName, '', {
-        id: createdUser.id,
+        _id: createdUser.id,
         ...createUserDto,
       });
       return {
