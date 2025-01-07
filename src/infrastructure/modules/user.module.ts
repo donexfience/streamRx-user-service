@@ -14,6 +14,7 @@ import { UpdateRequestStatusUseCase } from 'src/application/use-cases/streamer-R
 import { GetRequestByIdUseCase } from 'src/application/use-cases/streamer-Requeset/getRequestById';
 import { StreamerRequeset, StreamerRequestSchema } from '../database/mongoose/schemas/streamerRequsetSchema';
 import { StreamerRequestRepository } from '../database/mongoose/repositories/streamerRequest.respository';
+import { GetRequestByEmailUseCase } from 'src/application/use-cases/streamer-Requeset/getRequestByEmail';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { StreamerRequestRepository } from '../database/mongoose/repositories/str
     GetAllRequest,
     UpdateRequestStatusUseCase,
     GetRequestByIdUseCase,
+    GetRequestByEmailUseCase
   ],
 })
 export class UserModule {}

@@ -40,6 +40,7 @@ import { UpdateStreamerRequestDto } from 'src/application/dtos/update-request-dt
 import { GetAllUserUseCase } from 'src/application/use-cases/getAllUseCase';
 import { GetAllRequest } from 'src/application/use-cases/streamer-Requeset/getAllRequest';
 import { GetRequestByIdUseCase } from 'src/application/use-cases/streamer-Requeset/getRequestById';
+import { GetRequestByEmailUseCase } from 'src/application/use-cases/streamer-Requeset/getRequestByEmail';
 
 @Controller('users')
 @UserServiceControllerMethods()
@@ -55,6 +56,7 @@ export class UserController implements OnModuleInit {
     private readonly streamerRequestUpdateUseCase: UpdateRequestStatusUseCase,
     private readonly getAllRequest: GetAllRequest,
     private readonly getRequestById: GetRequestByIdUseCase,
+    private readonly getRequestByEmail: GetRequestByEmailUseCase,
   ) {
     this.rabbitMQProducer = new RabbitMQProducer(rabbitMQConnection);
   }
@@ -98,7 +100,7 @@ export class UserController implements OnModuleInit {
 
       console.log('after dto conversion', createUserDto);
       const createdUser = await this.CreateUserUseCase.execute(createUserDto);
-      
+
       const exchangeName = 'user-created';
       await this.rabbitMQProducer.publishToExchange(exchangeName, '', {
         _id: createdUser.id,
@@ -331,6 +333,31 @@ export class UserController implements OnModuleInit {
   async getStreamerRequestById(@Param('id') id: string) {
     try {
       const request = await this.getRequestById.execute(id);
+      if (!request) {
+        return {
+          success: false,
+          message: 'Streamer request not found',
+        };
+      }
+      return {
+        success: true,
+        message: 'Streamer request fetched successfully',
+        request,
+      };
+    } catch (error) {
+      console.error('Error fetching streamer request:', error);
+      return {
+        success: false,
+        message: error.message || 'Failed to fetch streamer request',
+      };
+    }
+  }
+
+  @Get('/streamer-requestbyemail/:email')
+  @HttpCode(HttpStatus.OK)
+  async getStreamerRequestByEmail(@Param('email') email: string) {
+    try {
+      const request = await this.getRequestByEmail.execute(email);
       if (!request) {
         return {
           success: false,
