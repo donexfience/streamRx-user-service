@@ -6,7 +6,6 @@ import {
 } from 'src/application/dtos/create-request-dto';
 import { Injectable } from '@nestjs/common';
 
-
 @Injectable()
 export class CreateRequestUseCase {
   constructor(
@@ -24,9 +23,15 @@ export class CreateRequestUseCase {
       message: createRequestDto.message,
       socialLinks: socialLinks,
       accessibility: createRequestDto.accessibility,
-      email: createRequestDto.email
+      email: createRequestDto.email,
     });
     console.log('in the use case after convertion to entity ', newRequest);
+    const existing = await this.streamerRequestRepository.findBYEmail(
+      createRequestDto.email,
+    );
+    if (existing) {
+      throw new Error('request already submitted');
+    }
 
     return await this.streamerRequestRepository.create(newRequest);
   }

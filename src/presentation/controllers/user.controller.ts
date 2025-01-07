@@ -98,7 +98,12 @@ export class UserController implements OnModuleInit {
 
       console.log('after dto conversion', createUserDto);
       const createdUser = await this.CreateUserUseCase.execute(createUserDto);
-
+      
+      const exchangeName = 'user-created';
+      await this.rabbitMQProducer.publishToExchange(exchangeName, '', {
+        id: createdUser.id,
+        ...createUserDto,
+      });
       return {
         success: true,
         message: 'User created successfully',
@@ -235,8 +240,6 @@ export class UserController implements OnModuleInit {
   ) {
     try {
       console.log('Received request data:', createStreamerRequestDto);
-
-      // Ensure all optional fields have default values
       const normalizedDto = {
         email: createStreamerRequestDto.email,
         channelProfileImageURL:

@@ -27,6 +27,16 @@ export class StreamerRequestRepository implements IStreamerRequestRepository {
     return this.toEntity(savedRequest);
   }
 
+  async findBYEmail(email: string): Promise<StreamerRequestEntity> {
+    try {
+      const request = await this.streamerRequestModel
+        .findOne({ email: email })
+        .exec();
+      if (!request) return null;
+      return this.toEntity(request);
+    } catch (error) {}
+  }
+
   async findById(id: string): Promise<StreamerRequestEntity> {
     try {
       console.log('StreamerRequestRepository: Finding by id:', id);
