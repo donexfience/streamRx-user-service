@@ -36,6 +36,7 @@ export interface getUserResponse {
   message: string;
   user?: {
     email: string;
+    _id:string;
     username: string;
     phone_number?: string;
     date_of_birth?: string;

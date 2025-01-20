@@ -135,6 +135,7 @@ export class UserController implements OnModuleInit {
         success: true,
         message: 'User get successfully',
         user: {
+          _id: user.id.toString(),
           email: user.email,
           role: user.role,
           username: user.username,
