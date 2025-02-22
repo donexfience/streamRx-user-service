@@ -12,9 +12,14 @@ import { CreateRequestUseCase } from 'src/application/use-cases/streamer-Requese
 import { GetAllRequest } from 'src/application/use-cases/streamer-Requeset/getAllRequest';
 import { UpdateRequestStatusUseCase } from 'src/application/use-cases/streamer-Requeset/updateRequest';
 import { GetRequestByIdUseCase } from 'src/application/use-cases/streamer-Requeset/getRequestById';
-import { StreamerRequeset, StreamerRequestSchema } from '../database/mongoose/schemas/streamerRequsetSchema';
+import {
+  StreamerRequeset,
+  StreamerRequestSchema,
+} from '../database/mongoose/schemas/streamerRequsetSchema';
 import { StreamerRequestRepository } from '../database/mongoose/repositories/streamerRequest.respository';
 import { GetRequestByEmailUseCase } from 'src/application/use-cases/streamer-Requeset/getRequestByEmail';
+import { UserServiceConsumer } from '../rabbitmq/consumer';
+import { UpdateUserByEmailUseCase } from 'src/application/use-cases/updateUserByEmailUsecase';
 
 @Module({
   imports: [
@@ -35,7 +40,9 @@ import { GetRequestByEmailUseCase } from 'src/application/use-cases/streamer-Req
     GetAllRequest,
     UpdateRequestStatusUseCase,
     GetRequestByIdUseCase,
-    GetRequestByEmailUseCase
+    GetRequestByEmailUseCase,
+    UserServiceConsumer,
+    UpdateUserByEmailUseCase
   ],
 })
 export class UserModule {}

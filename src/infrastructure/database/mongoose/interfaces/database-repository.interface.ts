@@ -9,4 +9,8 @@ export interface IUserRepository {
     updateData: Partial<UserEntity>,
   ): Promise<UserEntity | null>;
   findAll(): Promise<UserEntity[] | null>;
+  updateByEmail(
+    email: string,
+    updateData: Partial<UserEntity>,
+  ): Promise<UserEntity | null>;
 }

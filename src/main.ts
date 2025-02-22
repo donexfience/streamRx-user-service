@@ -6,10 +6,13 @@ import { join } from 'path';
 import * as express from 'express';
 ``;
 import { NextFunction, Request, Response } from 'express';
+import { UserServiceConsumer } from './infrastructure/rabbitmq/consumer';
 
 async function bootstrap() {
   // Create the main HTTP application
   const app = await NestFactory.create(AppModule, {});
+  const userServiceConsumer = app.get(UserServiceConsumer);
+  await userServiceConsumer.start();
 
   app.use(express.json({ limit: '50mb' }));
   app.use(express.raw({ type: 'application/json' }));

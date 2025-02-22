@@ -39,13 +39,78 @@ export class UserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
+    console.log(email, 'user found by using this email');
     const user = await this.userModel.findOne({ email });
+    console.log(user, 'user found by email');
     return user ? this.toEntity(user) : null;
   }
 
   async findById(id: string): Promise<UserEntity | null> {
     const user = await this.userModel.findById(id);
     return user ? this.toEntity(user) : null;
+  }
+
+  async updateByEmail(
+    email: string,
+    updateData: Partial<UserEntity>,
+  ): Promise<UserEntity | null> {
+    const existingUser = await this.userModel.findOne({ email: email }).exec();
+    if (!existingUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    console.log('Incoming update data:', updateData.social_links);
+    console.log('Existing social links:', existingUser.social_links);
+
+    if (updateData.social_links && Array.isArray(updateData.social_links)) {
+      const existingLinks = existingUser.social_links || [];
+      const mergedLinks: SocialLink[] = [...existingLinks];
+
+      updateData.social_links.forEach((newLink: SocialLink) => {
+        const existingLinkIndex = mergedLinks.findIndex(
+          (link: SocialLink) =>
+            link.platform === newLink.platform && link.url === newLink.url,
+        );
+
+        if (existingLinkIndex !== -1) {
+          mergedLinks[existingLinkIndex] = {
+            ...mergedLinks[existingLinkIndex],
+            ...newLink,
+          };
+        } else {
+          mergedLinks.push(newLink);
+        }
+      });
+      const uniqueLinks = mergedLinks.filter(
+        (link, index, self) =>
+          index ===
+          self.findIndex(
+            (t) => t.platform === link.platform && t.url === link.url,
+          ),
+      );
+
+      updateData.social_links = uniqueLinks;
+    }
+
+    if (updateData.tags && Array.isArray(updateData.tags)) {
+      const existingTags = existingUser.tags || [];
+      const updatedTags = Array.from(
+        new Set([...existingTags, ...updateData.tags]),
+      );
+      updateData.tags = updatedTags;
+    }
+
+    console.log('Merged social links:', updateData.social_links);
+    console.log(updateData, 'updated data full');
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(existingUser._id, { $set: updateData }, { new: true })
+      .exec();
+    console.log(
+      updatedUser,
+      'updated user in the repository sending the data to the usecase',
+    );
+    return updatedUser ? this.toEntity(updatedUser) : null;
   }
 
   async updateById(
